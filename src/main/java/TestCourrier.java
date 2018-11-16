@@ -23,12 +23,17 @@ class ContenuHtml implements Contenu {
     }
 }
 
-class Courrier {
-    private Contenu contenu;
+class Courrier <T extends Contenu> {
+    private T contenu;
     private String destinataire;
 
-    Courrier(Contenu contenu) {
-        this.contenu = contenu;
+    Courrier(Class<T> c) {
+        super();
+        try {
+            this.contenu = c.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     void prepare(String destinataire, String texte) {
@@ -46,13 +51,13 @@ public class TestCourrier {
 
     public static void main(String[] args) {
         //apres
-        Courrier courrierHtml = new Courrier(new ContenuHtml());
-        courrierHtml.prepare("adresse1@domaine", "texte1");
-        System.out.println(courrierHtml);
+        Courrier<ContenuHtml> chtml = new Courrier<ContenuHtml> (ContenuHtml.class);
+        chtml.prepare("adresse1@domaine", "texte1");
+        System.out.println(chtml);
 
-        Courrier courrierTexte = new Courrier(new ContenuTexte());
-        courrierTexte.prepare("adresse2@domaine", "texte2");
-        System.out.println(courrierTexte);
+        Courrier<ContenuTexte> ctext = new Courrier<ContenuTexte> (ContenuTexte.class);
+        ctext.prepare("adresse2@domaine", "texte2");
+        System.out.println(ctext);
 
         //avant
 //		CourrierHtml courrierHtml = new CourrierHtml();
