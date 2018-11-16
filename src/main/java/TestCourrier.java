@@ -31,9 +31,9 @@ class Courrier <T extends Contenu> {
         super();
         try {
             this.contenu = c.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
         }
+        catch (InstantiationException e) { e.printStackTrace();}
+        catch (IllegalAccessException e) {e.printStackTrace();}
     }
 
     void prepare(String destinataire, String texte) {
