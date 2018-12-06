@@ -1,3 +1,5 @@
+package Courrier;
+
 interface Contenu {
     void encode(String texte);
     String toString();
@@ -31,9 +33,8 @@ class Courrier <T extends Contenu> {
         super();
         try {
             this.contenu = c.newInstance();
-        }
-        catch (InstantiationException e) { e.printStackTrace();}
-        catch (IllegalAccessException e) {e.printStackTrace();}
+        } catch (InstantiationException e) {e.printStackTrace();}
+          catch (IllegalAccessException e) {e.printStackTrace();}
     }
 
     void prepare(String destinataire, String texte) {
@@ -50,7 +51,6 @@ class Courrier <T extends Contenu> {
 public class TestCourrier {
 
     public static void main(String[] args) {
-        //apres
         Courrier<ContenuHtml> chtml = new Courrier<ContenuHtml> (ContenuHtml.class);
         chtml.prepare("adresse1@domaine", "texte1");
         System.out.println(chtml);
@@ -58,13 +58,5 @@ public class TestCourrier {
         Courrier<ContenuTexte> ctext = new Courrier<ContenuTexte> (ContenuTexte.class);
         ctext.prepare("adresse2@domaine", "texte2");
         System.out.println(ctext);
-
-        //avant
-//		CourrierHtml courrierHtml = new CourrierHtml();
-//		courrierHtml.prepare("adresse1@domaine", "texte1");
-//		System.out.println(courrierHtml);
-//		CourrierTexte courrierTexte = new CourrierTexte();
-//		courrierTexte.prepare("adresse2@domaine", "texte2");
-//		System.out.println(courrierTexte);
     }
 }
