@@ -245,7 +245,4 @@ public class Jeu implements Game {
 
 		return listPiecesIHM;
 	}
-
-
-
 }

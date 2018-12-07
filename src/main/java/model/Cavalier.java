@@ -16,7 +16,7 @@ public class Cavalier extends AbstractPiece  {
 	 */
 	public Cavalier( Couleur couleur_de_piece, Coord coord) {
 
-		super(couleur_de_piece, coord,new ComportementCavalier());
+		super(couleur_de_piece, coord, new ComportementCavalier());
 
 	}
 
