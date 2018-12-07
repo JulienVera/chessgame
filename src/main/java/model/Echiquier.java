@@ -5,9 +5,19 @@ import java.util.List;
 
 
 /**
+ * @author francoise.perrin - 
+ * Inspiration Jacques SARAYDARYAN, Adrien GUENARD
+ * 
+ * <p>La clase Echiquier sert de facade aux jeux et piéces
+ * qui ne sont pas accessibles de l'extérieur
+ * C'est elle qui gére toute la logique métier des déplacements </p>
+ *
+ */
+/**
  * @author francoise.perrin
  *
  */
+
 public class Echiquier implements BoardGames {
 
 	private Jeu jeuBlanc;
@@ -371,6 +381,10 @@ public class Echiquier implements BoardGames {
 			e.switchJoueur();
 		
 		// ...
+	
+		
+	
+		
 		
 	}
 }
