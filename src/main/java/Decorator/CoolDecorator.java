@@ -24,7 +24,7 @@ class CoolDecorator extends Decorator {
 	JComponent decoratedComp;
 	JComponent thisComp;
 
-	public CoolDecorator(JComponent c) {
+	CoolDecorator(JComponent c) {
 		super(c);
 		mouse_over = false;
 		thisComp = this; //save this component

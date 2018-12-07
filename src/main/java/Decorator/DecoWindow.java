@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 
 public class DecoWindow extends JFrame  {
 
-	public DecoWindow() {
+	private DecoWindow() {
 		super("Deco Button");
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -33,9 +33,9 @@ public class DecoWindow extends JFrame  {
 		JPanel jp = new JPanel();
 		getContentPane().add(jp);
 
-		Decorator Enabled1;
-		jp.add(Enabled1 = new EnabledDecorator( new JButton("Enabled1")));
-		((EnabledDecorator) Enabled1).setDisabled();
+        EnabledDecorator Enabled1 = new EnabledDecorator( new JButton("Enabled1"));
+		jp.add(Enabled1);
+		Enabled1.setDisabled();
 		jp.add( new EnabledDecorator(new JButton("Enabled2")));
 		jp.add( new CoolDecorator(new EnabledDecorator(new JButton("EnabledCool"))));
 		jp.add( new SlashDecorator( new Decorator(new EnabledDecorator(new JButton("EnabledCoolSlash")))));

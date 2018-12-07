@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 class EnabledDecorator extends Decorator {
 
     private JComponent decorateComp;
-    static JComponent savedComp;
+    private static JComponent savedComp;
 
     EnabledDecorator(JComponent c) {
         super(c);

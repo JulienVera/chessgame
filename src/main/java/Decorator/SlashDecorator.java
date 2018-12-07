@@ -20,7 +20,7 @@ import javax.swing.JComponent;
 class SlashDecorator extends Decorator {
 	int x1, y1, w1, h1;
 
-	public SlashDecorator(JComponent c) {
+	SlashDecorator(JComponent c) {
 		super(c);
 		c.repaint();
 	}

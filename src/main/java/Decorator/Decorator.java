@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 
 class Decorator extends JComponent {
 	
-	public Decorator(JComponent c) {
+	Decorator(JComponent c) {
 		super();
 		setLayout(new BorderLayout());
 		add("Center", c);	
