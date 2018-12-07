@@ -1,5 +1,6 @@
 package vue;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,20 +13,18 @@ import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.Coord;
-import model.Couleur;
 import model.PieceIHM;
 import tools.ChessImageProvider;
+import tools.ChessPiecePos;
+import tools.Observer;
 import controler.ChessGameControlers;
 
 
@@ -35,8 +34,7 @@ import controler.ChessGameControlers;
  * Inspiration http://www.roseindia.net/java/example/java/swing/chess-application-swing.shtml
  * 
  *  IHM graphique d'un jeu d'echec 
- *  qui permet à 1 utilisateur de jouer
- *  en prenant successivement le role des blancs puis des noirs.
+ *  Cette classe est un observateur et le damier est mis à jour à chaque changement dans la classe métier
  *  
  */
 
@@ -49,7 +47,10 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 
 	// controleur de l'objet métier
 	private ChessGameControlers chessGameControler;
-	
+
+	// Taille de la fenêtre
+	private Dimension boardSize;
+
 	//Panneau stratifie permettant de superposer plusieurs couches
 	// visibles les unes sur les autres
 	private JLayeredPane layeredPane;
@@ -60,25 +61,22 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	//piece selectionnee
 	private JLabel pieceToMove;
 
-	// carre sur laquelle est posee la piece à deplacer
-	private JPanel pieceToMoveSquare;
-
-	// map permettant d'associer un JPanel (carre noir ou blanc)
-	// à ses coordonnees sur l'echiquier
-	private Map<JPanel, Coord> mapSquareCoord;
-
-	// tableau 2D qui stocke les JPanel
-	// permet de rafraichir l'affichage apres chaque deplacement
-	// valide par les classes metier
-	private JPanel[][] tab2DJPanel;
+	// Coord de la pièce sélectionnée
+	private Coord initCoord;
 
 	// coordonnee qui permettront de recadrer une piece 
 	// au milieu du carre lors d'un deplacement  (drag)
 	private int xAdjustment;
 	private int yAdjustment;
-
-	private Dimension boardSize;
-
+	
+	// map permettant d'associer un JPanel (carre noir ou blanc)
+	// à ses coordonnees sur l'echiquier
+	private Map<JPanel, Coord> mapSquareCoord;
+	
+	// tableau 2D qui stocke les JPanel
+		// permet de rafraichir l'affichage apres chaque deplacement
+		// valide par les classes metier
+		private JPanel[][] tab2DJPanel;
 
 
 	/**
@@ -102,19 +100,20 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	 */
 	public ChessGameGUI(String name, ChessGameControlers chessGameControler, Dimension boardSize) {
 		super(name);
-		this.chessGameControler = chessGameControler;  
-		this.boardSize = boardSize;
-
+		
 		this.mapSquareCoord = new HashMap<JPanel,Coord>();
 		this.tab2DJPanel = new JPanel[8][8];
 
-		// construit le plateau de l'echiquier sous forme de damier 8*8  
-		this.layeredPane = new JLayeredPane();
-		setContentPane(this.layeredPane);	
-		this.chessBoardGuiContainer = new JPanel();		
-		this.layeredPane.add(this.chessBoardGuiContainer, JLayeredPane.DEFAULT_LAYER);
-		this.chessBoardGuiContainer.setLayout( new GridLayout(8, 8) );
-		this.chessBoardGuiContainer.setBounds(0, 0, boardSize.width-10, boardSize.height-30);	
+		this.chessGameControler = chessGameControler;  
+		this.boardSize = boardSize;
+
+		this.initCoord = null;
+		this.pieceToMove = null;
+
+		// construit le plateau de l'echiquier sous forme de damier 8*8  	
+		this.layeredPane = new JLayeredPane();		
+		this.chessBoardGuiContainer = new JPanel();	
+		this.drawGrid();
 
 		// Ajout des écouteurs pour écouter les évènements souris
 		layeredPane.addMouseListener(this);
@@ -126,9 +125,45 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		// lorsque la vue s'enregistre auprès du ChessGame en tant qu'Observer
 		// sa méthode update() est invoquée
 
+		// sinon, si la méthode update() n'est pas invoquée
+		// par une notification au démarrage du jeu
+		// le remplissage est effectué par la ligne suivante à décommenter :
+		 this.initFillGrid();
+
 	}
 
 
+	/**
+	 *  construit le plateau de l'echiquier sous forme de damier 8*8  	
+	 */
+	private void drawGrid(){
+
+		JPanel square = null;
+
+		this.setContentPane(this.layeredPane);	
+		this.layeredPane.add(this.chessBoardGuiContainer, JLayeredPane.DEFAULT_LAYER);
+		this.chessBoardGuiContainer.setLayout( new GridLayout(8, 8) );
+		this.chessBoardGuiContainer.setBounds(0, 0, boardSize.width-10, boardSize.height-30);
+
+		// remplissage du damier avec les carres 
+		for (int i = 0; i<8; i++){
+			for (int j = 0; j<8; j++) {
+
+				// creation d'un JPanel pour le carre blanc ou noir
+				square = new JPanel( new BorderLayout() );
+				int row = i % 2;
+				if (row == 0) {
+					square.setBackground( j % 2 != 0 ? new Color(139,69,0) : new Color(255,250,240)  ); 
+				}
+				else {
+					square.setBackground( j % 2 != 0 ? new Color(255,250,240): new Color(139,69,0) );
+				}
+
+				// ajout du carre sur le damier
+				this.chessBoardGuiContainer.add( square );
+			}
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
@@ -137,19 +172,45 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	 * ou une promotion de pion dans la classe metier Echiquier
 	 * à partir de la liste de PieceIHM envoyée par l'objet observé (ChessGame)
 	 */
-	public void update(Observable arg0, Object arg1) {
+	public void update(Object arg1) {
 
 		List<PieceIHM> piecesIHM = (List<PieceIHM>) arg1;
 				
 		// rempli le damier abvec des carrés noirs et blancs
 		// et les images des pièces aux bonnes coordonnées
 		// en fonction des coordonnées retournée par l'objet métier
+		System.out.println(chessGameControler.getMessage() + "\n");	
 		this.drawGrid(piecesIHM);
 		
 		// rafraichi l'affichage après repositionnement de nouveaux composants
 		this.revalidate();
 	}
 
+
+	/**
+	 * Remplit le plateau de l'echiquier sur lequel  
+	 * sont superposes 1 JPanel pour le plateau et
+	 * autant de JPanel que de carres noirs ou blancs
+	 * avec des JLabel pour les images des pièces
+	 * 
+	 * Méthode appelée lors de construction de la JFrame
+	 * au cas où l'update ne serait pas appelé après la construction
+	 * (si pas de notification des observateurs lors du addObserver() ds main())
+	 */	 
+	private void initFillGrid(){  
+
+		JLabel piece;
+		JPanel panel;
+		for (int i = 0; i < ChessPiecePos.values().length; i++) {
+
+			for (int j = 0; j < (ChessPiecePos.values()[i].coords).length; j++) {
+				piece = new JLabel(new ImageIcon(ChessImageProvider.getImageFile(ChessPiecePos.values()[i].nom, ChessPiecePos.values()[i].couleur)));
+				panel = (JPanel) chessBoardGuiContainer.getComponent((ChessPiecePos.values()[i].coords[j].x) + (ChessPiecePos.values()[i].coords[j].y * 8));
+				panel.add(piece);
+			}
+		}
+	}
+	
 	/**
 	 * Remplit le plateau de l'echiquier sur lequel  
 	 * sont superposes 1 JPanel pour le plateau et
@@ -188,25 +249,22 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 			}
 		}
 		// Ajout des images des pièces sur le damier
-		for(PieceIHM pieceIHM : piecesIHM) {			
-			for(Coord coord : pieceIHM.getList()) {
-				int j = coord.x;
-				int i = coord.y;
+		for(PieceIHM pieceIHM : piecesIHM) {		
+				int j = pieceIHM.getX();
+				int i = pieceIHM.getY();
 
 				// fabrication de l'image de la pièce
 				pieceGuiLabel = new JLabel(
 						new ImageIcon(ChessImageProvider.getImageFile(
-								pieceIHM.getTypePiece(), pieceIHM.getCouleur())));
+								pieceIHM.getName(), pieceIHM.getCouleur())));
 
 				// ajout de l'image de piece sur le carre
 				square = tab2DJPanel[j][i];
 				square.add(pieceGuiLabel);
-			}		
-		}
+			}	
 	
 	}
-
-
+	
 	/**
 	 * @param i
 	 * @param j
@@ -216,15 +274,15 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		JPanel square = new JPanel( new BorderLayout() );
 		int row = i % 2;
 		if (row == 0) {
-			square.setBackground( j % 2 != 0 ? new Color(48, 48, 48) : new Color(242,247, 255)  );
+			square.setBackground( j % 2 != 0 ? new Color(139,69,0) : new Color(255,250,240)  );
 		}
 		else {
-			square.setBackground( j % 2 != 0 ? new Color(242,247, 255): new Color(48, 48, 48) );
+			square.setBackground( j % 2 != 0 ? new Color(255,250,240) :new Color(139,69,0)  );
 		}
 		return square;
 	}
-	
 
+	
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
@@ -232,24 +290,40 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	public void mousePressed(MouseEvent e){
 
 		Point pieceToMoveLocation = null;
+		JPanel square = null;
+
+		this.initCoord = null;
+		this.pieceToMove = null;
 
 		Component c =  this.chessBoardGuiContainer.findComponentAt(e.getX(), e.getY());
 
-		this.pieceToMove = null;
-
-		// si l'utilisateur a selectionne une piece
+		// si l'utilisateur a selectionné une piece
 		if (c instanceof JLabel) {
-		 
-			this.pieceToMove = (JLabel)c;
-			this.pieceToMoveSquare=(JPanel)c.getParent();
 
-			pieceToMoveLocation = this.pieceToMoveSquare.getLocation();
-			this.xAdjustment = pieceToMoveLocation.x - e.getX();
-			this.yAdjustment = pieceToMoveLocation.y - e.getY();
+			// calcul des coordonnées initiales
+			this.initCoord = translateCoord(e.getX(), e.getY());
 
-			this.pieceToMove.setLocation(e.getX() + xAdjustment, e.getY() + yAdjustment);
-			this.pieceToMove.setSize(pieceToMove.getWidth(), pieceToMove.getHeight());
-			this.layeredPane.add(pieceToMove, JLayeredPane.DRAG_LAYER);
+
+			// Si c'est bien le tour de jeu du joueur
+			if (this.chessGameControler.isPlayerOK(initCoord))	{
+
+				this.pieceToMove = (JLabel)c;
+
+				// Mise en place du déplacement visuel de l'image de la pièce
+				square=(JPanel)c.getParent();
+				pieceToMoveLocation = square.getLocation();
+				this.xAdjustment = pieceToMoveLocation.x - e.getX();
+				this.yAdjustment = pieceToMoveLocation.y - e.getY();
+				this.pieceToMove.setLocation(e.getX() + xAdjustment, e.getY() + yAdjustment);
+			
+				this.layeredPane.add(pieceToMove, JLayeredPane.DRAG_LAYER);
+
+
+				// Mise en évidence des cases vers lesquelles 
+				// la pièce peut être déplacée 	
+				
+				// ToDo
+			}
 		}
 	}
 
@@ -270,32 +344,14 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
-		Coord initCoord = null, finalCoord = null ;
-		Component targetedComponent = null;
-		JPanel targetSquare;
+		Coord  finalCoord = null ;
 
 		if(this.pieceToMove != null) {
 
-
 			this.pieceToMove.setVisible(false);
 
-			// recuperation du composant qui se trouve à position (pixel) finale
-			targetedComponent =  this.chessBoardGuiContainer.findComponentAt(e.getX(), e.getY());
-
-			// si c'est un carre occupe, on a recupere une image de piece
-			// et il faut recuperer le square qui la contient
-			if (targetedComponent instanceof JLabel){
-				targetSquare = (JPanel) targetedComponent.getParent();
-			}
-			// si c'est un carre vide
-			else {
-				targetSquare = (JPanel)targetedComponent;
-			}			
-
-			// recuperation coordonnees initiales et finales de la piece à deplacer
-			// en vue du deplacement metier
-			initCoord = this.mapSquareCoord.get(this.pieceToMoveSquare);
-			finalCoord = this.mapSquareCoord.get(targetSquare);
+			finalCoord = translateCoord(e.getX(), e.getY());
+			
 
 			// Si les coordonnees finales sont en dehors du damier, on les force à -1
 			// cela permettra à la methode chessGame.move de gerer le message d'erreur
@@ -303,49 +359,51 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 				finalCoord = new Coord(-1, -1);
 			}
 
-			// Invoque la methode de deplacement de l'echiquier		
-			this.chessGameControler.move(initCoord, finalCoord);
+			// Invoque la methode de deplacement de l'echiquier	
+			// qui invoque aussi la méthode de promotion du pion si besoin
+			this.chessGameControler.move(this.initCoord, finalCoord);
 
 			// l'echiquier étant observé par cette vue (fenetre)
 			// des lors qu'il est modifie par l'invocation de la méthode move(),
 			// la vue en est avertie et
 			// sa methode update est appelee pour rafraichir l'affichage du damier
 
-			System.out.println(this.chessGameControler.getMessage());	// A commenter sauf pour verifier si OK
 
-			
 		}
 	}
 
+	/**
+	 * @param xpixel
+	 * @param ypixel
+	 * @return les coordonnées en base 8*8
+	 */
+	private Coord translateCoord(int xpixel, int ypixel) {	
+		Coord coord = null;
+		Double x = new Double(Math.floor(((double) xpixel / (this.boardSize.width-10)) * 8));
+		Double y = new Double(Math.floor(((double) ypixel / (this.boardSize.height-30)) * 8));
+		coord = new Coord(x.intValue(), y.intValue());
+		return coord;
+	}
+
+	@Override	
+	public void mouseClicked(MouseEvent e) {
+		
+	}
 
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void mouseEntered(MouseEvent e){
+
 	}
-
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+
 	}
+
 }

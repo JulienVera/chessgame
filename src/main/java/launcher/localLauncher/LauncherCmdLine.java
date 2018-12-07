@@ -1,9 +1,10 @@
 package launcher.localLauncher;
 
-import java.util.Observer;
-
+import model.BoardGames;
+import model.ChessGame;
 import vue.ChessGameCmdLine;
 import controler.ChessGameControlers;
+import controler.controlerLocal.ChessGameControler;
 
 
 
@@ -15,18 +16,21 @@ public class LauncherCmdLine {
 	
 	public static void main(String[] args) {		
 		
-		ChessGame model;
+		BoardGames model;
 		ChessGameControlers controler;	
 		ChessGameCmdLine vue;
 		
 		model = new ChessGame();	
 		controler = new ChessGameControler(model);
 		
-		new ChessGameCmdLine(controler);	
+		//new ChessGameCmdLine(controler);	
 		
 		vue = new ChessGameCmdLine(controler);
+		model.addObserver(vue);
 	
 		vue.go();
+		
+		//vue.update(model.getPiecesIHM());
 	}
 
 }

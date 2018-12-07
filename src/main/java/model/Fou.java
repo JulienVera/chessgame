@@ -15,7 +15,8 @@ public class Fou extends AbstractPiece {
 	 * @param coord
 	 */
 	public Fou(Couleur couleur_de_piece, Coord coord) {
-		super(couleur_de_piece, coord);
+		super(couleur_de_piece, coord, new ComportementFou());
+		
 	}
 
 	/* (non-Javadoc)
@@ -24,7 +25,6 @@ public class Fou extends AbstractPiece {
 	@Override
 	public boolean isMoveOk(int xFinal, int yFinal, boolean isCatchOk,
 			boolean isCastlingPossible) {
-		
 		boolean ret = false;
 		
 		if (Math.abs(yFinal - this.getY()) == Math.abs(xFinal - this.getX())) {

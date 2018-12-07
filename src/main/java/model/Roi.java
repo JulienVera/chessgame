@@ -14,7 +14,9 @@ public class Roi extends AbstractPiece {
 	 * @param coord
 	 */
 	public Roi( Couleur couleur_de_piece, Coord coord) {
-		super(couleur_de_piece, coord);
+		super(couleur_de_piece, coord, new ComportementRoi());
+		System.out.println("Constructeur Roi");
+
 	}
 
 	@Override

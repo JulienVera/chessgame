@@ -14,7 +14,9 @@ public class Reine extends AbstractPiece {
 	 * @param coord
 	 */
 	public Reine(Couleur couleur_de_piece, Coord coord) {
-		super(couleur_de_piece, coord);
+		super(couleur_de_piece, coord, new ComportementReine());
+		System.out.println("Constructeur Reine");
+
 	}
 
 	/* (non-Javadoc)

@@ -101,6 +101,7 @@ public class Introspection {
 		try {
 			//On cr�e un objet Class
 			Class<?> classe = Class.forName(className);
+
 			// on r�cup�re le constructeur qui a les param�tres args
 			Class<?>[] paramTypes = null;
 			if(args != null){

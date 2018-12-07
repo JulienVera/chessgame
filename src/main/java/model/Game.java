@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 
 
 /**
@@ -48,6 +50,11 @@ public interface Game  {
 	 * a été capturée
 	 */
 	public boolean capture(int xCatch, int yCatch) ;
+	
+	/**
+	 * @return une Liste de PieceIHM*/
+	
+	public List<PieceIHM> getPiecesIHM();
 
 
 

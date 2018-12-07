@@ -3,6 +3,8 @@ package tools;
 import java.util.LinkedList;
 import java.util.List;
 
+import model.ComportementDeplacement;
+import model.ComportementFou;
 import model.Coord;
 import model.Couleur;
 import model.Pieces;
@@ -32,16 +34,17 @@ public class ChessPiecesFactory {
 
 		List<Pieces> pieces = null;
 		pieces = new LinkedList<Pieces>();
+		ComportementDeplacement comportement = new ComportementFou();
 		
 		if (pieceCouleur != null){
 			for (int i = 0; i < ChessPiecePos.values().length; i++) {
 
 				if (pieceCouleur.equals(ChessPiecePos.values()[i].couleur)) {
 					for (int j = 0; j < (ChessPiecePos.values()[i].coords).length; j++) {
-						String className = "model." + ChessPiecePos.values()[i].nom;	// attention au chemin
+						String className = ChessPiecePos.values()[i].nom;	// attention au chemin
 						Coord pieceCoord = ChessPiecePos.values()[i].coords[j];
-						pieces.add((Pieces) Introspection.newInstance (className,
-								new Object[] {pieceCouleur, pieceCoord}));
+						pieces.add((Pieces) Introspection.newInstance ("model.AbstractPiece",
+								new Object[] {pieceCouleur, pieceCoord,comportement,className}));
 					}
 				}
 			}

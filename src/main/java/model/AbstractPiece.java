@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.print.Printable;
+
 
 
 /**
@@ -9,10 +11,14 @@ package model;
  * Chaque classe d�riv�e (Pion, etc.) sera capable de dire 
  * si le d�placement est OK.
  */
-public abstract class AbstractPiece implements Pieces {
+public class AbstractPiece implements Pieces {
 
 	private int x, y;
 	private Couleur couleur;
+	private ComportementDeplacement comportementDeplacement;
+	protected boolean premierCoup;
+	private String name;
+
 	
 
 	/**
@@ -20,10 +26,25 @@ public abstract class AbstractPiece implements Pieces {
 	 * @param couleur
 	 * @param coord
 	 */
-	public AbstractPiece(Couleur couleur, Coord coord){
+	//add to constructor
+	public AbstractPiece(Couleur couleur, Coord coord, ComportementDeplacement comportementDeplacement, String name){
 		this.x = coord.x;
 		this.y = coord.y;
 		this.couleur=couleur;
+		this.comportementDeplacement= comportementDeplacement;
+		this.premierCoup = true;
+		this.name = name;
+
+	}
+	
+	public AbstractPiece(Couleur couleur, Coord coord, ComportementFou comportementDeplacement, String name){
+		this.x = coord.x;
+		this.y = coord.y;
+		this.couleur=couleur;
+		this.comportementDeplacement= comportementDeplacement;
+		this.premierCoup = true;
+		this.name = name;
+
 	}
 
 	/* (non-Javadoc)
@@ -51,7 +72,7 @@ public abstract class AbstractPiece implements Pieces {
 	 * @see model.piece.Pieces#getType()
 	 */
 	public String getName() {
-		return getClass().getSimpleName();
+		return this.name;
 	}
 	
 	/* (non-Javadoc)
@@ -62,6 +83,7 @@ public abstract class AbstractPiece implements Pieces {
 	public boolean move(int x, int y){
 		boolean ret = false;
 		if(Coord.coordonnees_valides(x,y)){
+			this.premierCoup = false;
 			this.x=x;
 			this.y=y;
 			ret = true;
@@ -100,8 +122,9 @@ public abstract class AbstractPiece implements Pieces {
 	 * En fonction du type de pièce (Pion, etc.)
 	 * est capable de dire si le déplacement est OK
 	 */
-	public abstract boolean isMoveOk(int xFinal, int yFinal, boolean isCatchOk,
-			boolean isCastlingPossible) ;
+	public boolean isMoveOk(int xFinal, int yFinal, boolean isCatchOk,boolean isCastlingPossible){
+		return comportementDeplacement.isMoveOk(this.x, this.y, xFinal, yFinal, isCatchOk, isCastlingPossible,this.premierCoup);		
+	}
 
 }
 

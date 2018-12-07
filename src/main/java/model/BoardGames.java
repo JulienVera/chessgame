@@ -1,5 +1,9 @@
 package model;
 
+import java.util.List;
+
+import tools.Observable;
+
 
 /**
  * @author francoise.perrin
@@ -8,7 +12,7 @@ package model;
  * des jeux de plateaux
  *
  */
-public interface BoardGames {	
+public interface BoardGames extends Observable{	
 
 	/**
 	 * Permet de deplacer une piece connaissant ses coordonnees initiales 
@@ -42,5 +46,15 @@ public interface BoardGames {
 	 * @return la couleur de la pièce sélectionnée
 	 */
 	public Couleur getPieceColor(int x, int y);
+	
+	/**
+	 * @return une Liste de PieceIHM*/
+	
+	public List<PieceIHM> getPiecesIHM();
+	
+	public boolean isMoveOk(int xInit, int yInit, int xFinal, int yFinal);
+	
+	public void switchJoueur();
+
  
 }
