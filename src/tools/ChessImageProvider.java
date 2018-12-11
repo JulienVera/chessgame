@@ -43,8 +43,8 @@ public class ChessImageProvider {
 		key = pieceType + pieceCouleur.name();
 		value = mapImage.get(key);
 		File g=new File("");
-		ret = g.getAbsolutePath()+"\\images\\" + value;
-		return ret;		
+		ret = g.getAbsolutePath() + "/images/" + value;
+		return ret;
 	}
 
 	/**
@@ -54,5 +54,4 @@ public class ChessImageProvider {
 	public static void main(String[] args) {
 		System.out.println(ChessImageProvider.getImageFile("Cavalier", Couleur.BLANC));
 	}
-
 }

@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -18,9 +19,11 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import model.Coord;
+import model.PieceIHMs;
 import tools.ChessImageProvider;
 import tools.ChessPiecePos;
 import controler.ChessGameControlers;
+import tools.Observers;
 
 
 /**
@@ -32,7 +35,7 @@ import controler.ChessGameControlers;
  *  Cette classe est un observateur et le damier est mis à jour à chaque changement dans la classe métier
  *  
  */
-public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionListener{
+public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionListener, Observers {
 
 	private static final long serialVersionUID = 1L;
 
@@ -157,8 +160,14 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		for (int i = 0; i < ChessPiecePos.values().length; i++) {
 
 			for (int j = 0; j < (ChessPiecePos.values()[i].coords).length; j++) {
-				piece = new JLabel(new ImageIcon(ChessImageProvider.getImageFile(ChessPiecePos.values()[i].nom, ChessPiecePos.values()[i].couleur)));
-				panel = (JPanel) chessBoardGuiContainer.getComponent((ChessPiecePos.values()[i].coords[j].x) + (ChessPiecePos.values()[i].coords[j].y * 8));
+				piece = new JLabel(new ImageIcon(ChessImageProvider.getImageFile(
+                    ChessPiecePos.values()[i].nom,
+                    ChessPiecePos.values()[i].couleur
+                )));
+				panel = (JPanel) chessBoardGuiContainer.getComponent(
+                    (ChessPiecePos.values()[i].coords[j].x)
+                    + (ChessPiecePos.values()[i].coords[j].y * 8)
+                );
 				panel.add(piece);
 			}
 		}
@@ -175,7 +184,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 
 		this.initCoord = null;
 		this.pieceToMove = null;
-
 		Component c =  this.chessBoardGuiContainer.findComponentAt(e.getX(), e.getY());
 
 		// si l'utilisateur a selectionné une piece
@@ -184,10 +192,8 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 			// calcul des coordonnées initiales
 			this.initCoord = translateCoord(e.getX(), e.getY());
 
-
 			// Si c'est bien le tour de jeu du joueur
 			if (this.chessGameControler.isPlayerOK(initCoord))	{
-
 				this.pieceToMove = (JLabel)c;
 
 				// Mise en place du déplacement visuel de l'image de la pièce
@@ -195,15 +201,24 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 				pieceToMoveLocation = square.getLocation();
 				this.xAdjustment = pieceToMoveLocation.x - e.getX();
 				this.yAdjustment = pieceToMoveLocation.y - e.getY();
-				this.pieceToMove.setLocation(e.getX() + xAdjustment, e.getY() + yAdjustment);
+				this.pieceToMove.setLocation(
+                    e.getX() + xAdjustment,
+                    e.getY() + yAdjustment
+                );
 			
 				this.layeredPane.add(pieceToMove, JLayeredPane.DRAG_LAYER);
 
-
 				// Mise en évidence des cases vers lesquelles 
 				// la pièce peut être déplacée 	
-				
-				// ToDo
+
+//				for(Component component : this.chessBoardGuiContainer.getComponents()){
+//					int xDest = component.getX()/(layeredPane.getHeight()/7);
+//					int yDest = component.getY()/(layeredPane.getHeight()/7);
+//					if(this.chessGameControler.isMoveOk(this.initCoord, new Coord(xDest,yDest))){
+//						component.setBackground(Color.GREEN);
+//					}
+//				}
+
 			}
 		}
 	}
@@ -279,5 +294,29 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	@Override
 	public void mouseExited(MouseEvent e) {
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void update(Object o) {
+		List<PieceIHMs> listPieces;
+		try {
+			listPieces = (List<PieceIHMs>) o;
+		} catch(Exception e) {return;}
+
+		JLabel piece;
+		JPanel panel;
+		for (PieceIHMs pieceIHM : listPieces) {
+			piece = new JLabel(new ImageIcon(ChessImageProvider.getImageFile(
+			        pieceIHM.getNamePiece(),
+                    pieceIHM.getCouleur()
+            )));
+			panel = (JPanel) chessBoardGuiContainer.getComponent((pieceIHM.getX()) + (pieceIHM.getY() * 8));
+			panel.removeAll();
+			panel.add(piece);
+		}
+
+		this.repaint();
+		this.revalidate();
 	}
 }

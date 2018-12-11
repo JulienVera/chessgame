@@ -44,9 +44,7 @@ public class ChessGameControler implements ChessGameControlers {
             Couleur colorCurrentPlayer = this.chessGame.getColorCurrentPlayer();
             Couleur colorTargetPlayer = this.chessGame.getPieceColor(initCoord.x, initCoord.y);
 
-            if(colorCurrentPlayer.equals(colorTargetPlayer)) {
-                return true;
-            }
+            return colorCurrentPlayer.equals(colorTargetPlayer);
         }
         return false;
     }
