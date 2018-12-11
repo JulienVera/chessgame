@@ -1,13 +1,11 @@
 package model;
 
 
-
-
 /**
  * @author francoise.perrin
  * Inspiration Jacques SARAYDARYAN, Adrien GUENARD*
  */
-public class Pion extends AbstractPiece  {
+public abstract class Pion extends AbstractPiece  {
 
 	private boolean premierCoup;
 
@@ -15,17 +13,14 @@ public class Pion extends AbstractPiece  {
 	 * @param couleur_de_piece
 	 * @param coord
 	 */
-	public Pion(Couleur couleur_de_piece, Coord coord) {
+	Pion(Couleur couleur_de_piece, Coord coord) {
 		super(couleur_de_piece, coord);
 		this.premierCoup = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see model.AbstractPiece#isMoveOk(int, int)
-	 */
 	@Override
 	public boolean isMoveOk(int xFinal, int yFinal, boolean isCatchOk,
-			boolean isCastlingPossible) {
+							boolean isCastlingPossible) {
 
 		boolean ret = false;
 
@@ -33,41 +28,46 @@ public class Pion extends AbstractPiece  {
 		if (!isCatchOk && !isCastlingPossible){
 
 			if ((xFinal == this.getX())
-					&& (Math.abs(yFinal - this.getY()) <= 1 || 
-					(Math.abs(yFinal - this.getY()) <= 2 && this.premierCoup==true))) {
+					&& (Math.abs(yFinal - this.getY()) <= 1 ||
+					(Math.abs(yFinal - this.getY()) <= 2 && this.premierCoup))) {
 
+				ret = this.checkOutOfBounds(yFinal);
+				/* TODO
 				if ((Couleur.NOIR.equals(this.getCouleur()) && (yFinal - this.getY() > 0))
-						|| (Couleur.BLANC.equals(this.getCouleur()) 
+						|| (Couleur.BLANC.equals(this.getCouleur())
 								&& (yFinal - this.getY() < 0))) {
 					ret = true;
 				}
+				*/
 			}
 		}
 		// Déplacement diagonal
 		else {
+			/* TODO
 			if (Couleur.NOIR.equals(this.getCouleur())) {
-				if ((yFinal == this.getY()+1 && xFinal == this.getX()+1) 
+				if ((yFinal == this.getY()+1 && xFinal == this.getX()+1)
 						|| (yFinal == this.getY()+1 && xFinal == this.getX()-1)) {
 					ret = true;
 				}
 			}
 
 			if (Couleur.BLANC.equals(this.getCouleur())) {
-				if ((yFinal == this.getY()-1 && xFinal == this.getX()+1) 
+				if ((yFinal == this.getY()-1 && xFinal == this.getX()+1)
 						|| (yFinal == this.getY()-1 && xFinal == this.getX()-1)) {
 					ret = true;
 				}
-			}	
+			}
+			*/
+			ret = this.checkDiago(xFinal, yFinal);
 		}
 
 		return ret;
 	}
 
+	public abstract boolean checkOutOfBounds(int yFinal);
+	public abstract boolean checkDiago(int xFinal, int yFinal);
 
 
-	/* (non-Javadoc)
-	 * @see model.AbstractPiece#move(int, int)
-	 */
 	@Override
 	public boolean move(int x, int y){
 
@@ -79,7 +79,4 @@ public class Pion extends AbstractPiece  {
 		}
 		return ret;
 	}
-
-
-
 }
