@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author francoise.perrin - 
  * Inspiration Jacques SARAYDARYAN, Adrien GUENARD
- *
+ * 
  * <p>La clase Echiquier sert de facade aux jeux et piéces
  * qui ne sont pas accessibles de l'extérieur
  * C'est elle qui gére toute la logique métier des déplacements </p>
@@ -24,14 +24,11 @@ public class Echiquier implements BoardGames {
 	private Jeu jeuNoir;
 	private Jeu jeuCourant, jeuOppose;
 	private String message;
-
 	private boolean isMoveOk ;
 	private boolean isCatchOk;
 	private boolean isPieceToMoveOk;
-
 	private boolean isForMove;
 	private boolean isCastlingPossible;
-
 
 	public Echiquier() {
 		super();
@@ -68,14 +65,13 @@ public class Echiquier implements BoardGames {
 		}
 	}
 
-
 	/**
 	 * Permet de vérifier si une piéce peut être déplacée.
 	 * <p>L'algo est le suivant : <br>
 	 * 		s'il n'existe pas de piece du jeu courant aux coordonnées initiales --> false, <br>
 	 * 		si les coordonnées finales ne sont pas valides ou égales aux initiales --> false, <br>
-	 * 		si position finale ne correspond pas à algo de déplacement piece --> false, <br>
-	 * 		s'il existe une piéce intermédiaire sur la trajectoire --> false (sauf cavalier), <br>
+	 * 		si position finale ne correspond pas à algo de déplacement piece --> false, <br> 
+	 * 		s'il existe une piéce intermédiaire sur la trajectoire --> false (sauf cavalier), <br> 
 	 * 		s'il existe une piéce positionnées aux coordonnées finales :<br>
 	 * 			si elle est de la méme couleur --> false ou tentative roque du roi, <br>
 	 * 			sinon  :	prendre la piéce intermédiaire (vigilance pour le cas du pion)
@@ -86,12 +82,12 @@ public class Echiquier implements BoardGames {
 	 * @param xFinal
 	 * @param yFinal
 	 * @return true si le déplacement est effectué, false sinon
-	 *
+	 * 
 	 */
 	public boolean isMoveOk(int xInit, int yInit, int xFinal, int yFinal) {
 
 		this.isMoveOk = false;
-		this.isForMove = true;
+		this.isForMove = true;	
 
 		//	s'il n'existe pas de piece du jeu courant aux coordonnées initiales --> false
 		this.isPieceToMoveOk = jeuCourant.isPieceHere(xInit, yInit)	;
@@ -101,12 +97,12 @@ public class Echiquier implements BoardGames {
 		}
 		else {
 			this.isMoveOk = isMoveLegal(xInit,  yInit,  xFinal,  yFinal);
-
-			if(!this.isMoveOk){
+			
+			if(!this.isMoveOk){ 
 				this.setMessage(
-                    "KO : la position finale ne correspond pas à algo de déplacement " +
-                    "légal de la piece "
-                );
+					"KO : la position finale ne correspond pas à algo de déplacement " +
+					"légal de la piece "
+				);
 			}
 		}
 
@@ -123,7 +119,7 @@ public class Echiquier implements BoardGames {
 		this.isCastlingPossible = false;
 
 		// si coordonnées finales == coordonnées initiales --> false
-		if (!(xInit == xFinal &&  yInit == yFinal)){
+		if (!(xInit == xFinal &&  yInit == yFinal)){		
 
 			//  s'il existe une pièce intermédiaire sur la trajectoire --> false (sauf cavalier)
 			coordPieceInter = this.pieceOnTraject(xInit, yInit, xFinal, yFinal);
@@ -138,13 +134,13 @@ public class Echiquier implements BoardGames {
 						this.jeuCourant.setCastling();
 						isPieceOnPath = true;
 					}
-					// si elle n'est pas de la méme couleur, elle pourrait être prise
+					// si elle n'est pas de la méme couleur, elle pourrait être prise 
 					else {
 						this.isCatchOk = true;
-						if (this.isForMove){
+						if (this.isForMove == true){
 							this.jeuCourant.setPossibleCapture();
 						}
-					}
+					}			
 				}
 				// pièce intermédiaire sur la trajectoire qui empêche déplacement
 				else {
@@ -152,16 +148,10 @@ public class Echiquier implements BoardGames {
 				}
 			}
 
-			//	si position finale ne correspond pas à algo de déplacement piece --> false
-			boolean isMoveJeuOk = jeuCourant.isMoveOk(
-				xInit,
-				yInit,
-				xFinal,
-				yFinal,
-				this.isCatchOk,
-				this.isCastlingPossible
-			);
-			this.isMoveOk = this.isPieceToMoveOk && !isPieceOnPath && isMoveJeuOk;
+			//	si position finale ne correspond pas à algo de déplacement piece --> false		 
+			boolean isMoveJeuOk = jeuCourant.isMoveOk(xInit, yInit, xFinal, yFinal, this.isCatchOk, this.isCastlingPossible);
+
+			this.isMoveOk = this.isPieceToMoveOk && !isPieceOnPath && isMoveJeuOk;	
 		}
 		return this.isMoveOk;
 	}
@@ -169,7 +159,7 @@ public class Echiquier implements BoardGames {
 	/**
 	 * Permet de déplacer une piéce connaissant ses coordonnées initiales vers ses
 	 * coordonnées finales.
-	 * l'algo vérifie que le déplacement est légal,
+	 * l'algo vérifie que le déplacement est légal, 
 	 * effectue ce déplacement avec l'éventuelle capture,
 	 * rembobine si le déplacement et la capture ont mis le roi en échec
 	 * @param xInit position initiale
@@ -177,11 +167,11 @@ public class Echiquier implements BoardGames {
 	 * @param xFinal
 	 * @param yFinal
 	 * @return true si le déplacement est effectué, false sinon
-	 *
+	 * 
 	 */
 	public boolean move (int xInit, int yInit, int xFinal, int yFinal){
 
-		boolean ret;
+		boolean ret = false;
 
 		// effectuer le déplacement
 		ret = this.jeuCourant.move(xInit, yInit, xFinal, yFinal);
@@ -190,7 +180,7 @@ public class Echiquier implements BoardGames {
 		// effectuer l'éventuelle capture
 		if (ret && this.isCatchOk) {
 			this.jeuOppose.capture(xFinal, yFinal);
-			this.setMessage("OK : déplacement  + capture  ");
+			this.setMessage("OK : déplacement  + capture  ");			
 		}
 
 		this.isCatchOk = false;
@@ -198,7 +188,6 @@ public class Echiquier implements BoardGames {
 
 		return ret;
 	}
-
 
 	/**
 	 * Permet de vérifier s'il existe une piece sur la trajectoire
@@ -226,7 +215,7 @@ public class Echiquier implements BoardGames {
 				}
 			}
 			// si vers Y decroissants
-			if (yFinal < yInit) {
+			if (yFinal < yInit) {				
 				for (int i = yInit - 1; i >= yFinal; i--) {
 					if (jeuBlanc.isPieceHere(xInit, i) || jeuNoir.isPieceHere(xInit, i)) {
 						pieceOnTrajectCoord = new Coord(xInit,i);
@@ -234,10 +223,10 @@ public class Echiquier implements BoardGames {
 					}
 				}
 			}
-		}
+		} 
 		else {
 			// Mouvement rectiligne le long de l'axe X
-			if (yInit == yFinal) {
+			if (yInit == yFinal) { 
 				// si vers X croissants
 				if (xFinal > xInit) {
 					for (int i = xInit + 1; i <= xFinal; i++) {
@@ -256,9 +245,9 @@ public class Echiquier implements BoardGames {
 						}
 					}
 				}
-			}
+			} 
 			else {
-				// Mouvement en diagonale
+				// Mouvement en diagonale 
 				if (Math.abs(yInit - yFinal) == Math.abs(xInit - xFinal)) {
 					int ecart = Math.abs(yInit - yFinal);
 
@@ -268,7 +257,7 @@ public class Echiquier implements BoardGames {
 							if (jeuBlanc.isPieceHere(xInit + i, yInit + i) || jeuNoir.isPieceHere(xInit + i, yInit + i)) {
 								pieceOnTrajectCoord = new Coord(xInit + i, yInit + i);
 								break;
-							}
+							}						
 						}
 					}
 					// X croissant, Y decroissant
@@ -277,7 +266,7 @@ public class Echiquier implements BoardGames {
 							if (jeuBlanc.isPieceHere(xInit + i, yInit - i) || jeuNoir.isPieceHere(xInit + i, yInit - i)) {
 								pieceOnTrajectCoord = new Coord(xInit + i, yInit - i);
 								break;
-							}
+							}						
 						}
 					}
 					// X decroissant, Y decroissant
@@ -286,25 +275,26 @@ public class Echiquier implements BoardGames {
 							if (jeuBlanc.isPieceHere(xInit - i, yInit - i) || jeuNoir.isPieceHere(xInit - i, yInit - i)) {
 								pieceOnTrajectCoord = new Coord(xInit - i, yInit - i);
 								break;
-							}
+							}							
 						}
-					}
+					}					
+
 					// X decroissant, Y croissant
 					if ((xFinal - xInit < 0) && (yFinal - yInit > 0)) {
 						for (int i = 1; i <= ecart; i++) {
 							if (jeuBlanc.isPieceHere(xInit - i, yInit + i) || jeuNoir.isPieceHere(xInit - i, yInit + i)) {
 								pieceOnTrajectCoord = new Coord(xInit - i, yInit + i);
 								break;
-							}
+							}							
 						}
 					}
-				}
+				} 
 				else {
 					// Dans tous les autres cas de mouvement
 					// la piece au coordonnées initiale est un cavalier
 					if (jeuBlanc.isPieceHere(xFinal, yFinal) || jeuNoir.isPieceHere(xFinal, yFinal)) {
-						pieceOnTrajectCoord = new Coord(xFinal, yFinal);
-					}
+						pieceOnTrajectCoord = new Coord(xFinal, yFinal);			
+					}	
 				}
 			}
 		}
@@ -315,7 +305,7 @@ public class Echiquier implements BoardGames {
 	 * @see java.lang.Object#toString()
 	 * invoque la méthode toString des 2 jeux
 	 */
-	public String toString() {
+	public String toString() {		
 		String st = "";
 		st += "Jeu Blanc " + this.jeuBlanc.toString() + "\n";
 		st += "Jeu Noir " + this.jeuNoir.toString() + "\n";
@@ -356,36 +346,36 @@ public class Echiquier implements BoardGames {
 	public static void main(String[] args) {
 		Echiquier e = new Echiquier();
 		boolean isMoveOK = false;
-
+		
 		System.out.println("Test classe Echiquier\n");
-
+		
 		System.out.println(e);
-
+	
 		System.out.print("\n Déplacement de 3,6 vers 3,4 = ");
 		if (e.isMoveOk(3, 6, 3, 4))
 			isMoveOK = e.move(3, 6, 3, 4);		// true
-		System.out.println(e.getMessage() + "\n");
+		System.out.println(e.getMessage() + "\n");	
 		System.out.println(e);
 		if (isMoveOK)
 			e.switchJoueur();
-
-		System.out.print("\n Déplacement de 3,4 vers 3,6 = ");
+		
+		System.out.print("\n Déplacement de 3,4 vers 3,6 = ");		
 		if (e.isMoveOk(3, 4, 3, 6))
 			isMoveOK = e.move(3, 4, 3, 6); 	// false : autre joueur
-		System.out.println(e.getMessage() + "\n");
+		System.out.println(e.getMessage() + "\n");	
 		System.out.println(e);
 		e.switchJoueur();
-
-		System.out.print("\n Déplacement de 3,4 vers 3,6 = ");
+		
+		System.out.print("\n Déplacement de 3,4 vers 3,6 = ");		
 		if (e.isMoveOk(3, 4, 3, 6))
 			isMoveOK = e.move(3, 4, 3, 6); 	// false : algo KO
-		System.out.println(e.getMessage() + "\n");
+		System.out.println(e.getMessage() + "\n");	
 		System.out.println(e);
 		if (isMoveOK)
 			e.switchJoueur();
-
+		
 		// ...
 
-        System.out.println(e.getPieceIHMs());
+		System.out.println(e.getPieceIHMs());
 	}
 }
