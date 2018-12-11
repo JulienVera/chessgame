@@ -13,7 +13,7 @@ public abstract class Pion extends AbstractPiece  {
 	 * @param couleur_de_piece
 	 * @param coord
 	 */
-	Pion(Couleur couleur_de_piece, Coord coord) {
+	public Pion(Couleur couleur_de_piece, Coord coord) {
 		super(couleur_de_piece, coord);
 		this.premierCoup = true;
 	}

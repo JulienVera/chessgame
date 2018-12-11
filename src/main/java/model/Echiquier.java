@@ -24,7 +24,7 @@ public class Echiquier implements BoardGames {
 	private Jeu jeuNoir;
 	private Jeu jeuCourant, jeuOppose;
 	private String message;
-	 
+
 	private boolean isMoveOk ;
 	private boolean isCatchOk;
 	private boolean isPieceToMoveOk;
@@ -46,6 +46,14 @@ public class Echiquier implements BoardGames {
 		this.isCastlingPossible = false;
 	}
 
+    public List<PieceIHMs> getPieceIHMs() {
+        List<PieceIHMs> list = new LinkedList<>();
+
+        if(this.jeuBlanc != null) {list.addAll(this.jeuBlanc.getPiecesIHM());}
+        if(this.jeuNoir != null) {list.addAll(this.jeuNoir.getPiecesIHM());}
+
+        return list;
+    }
 
 	/**
 	 * Permet de changer le joueur courant.
@@ -95,13 +103,12 @@ public class Echiquier implements BoardGames {
 			this.isMoveOk = isMoveLegal(xInit,  yInit,  xFinal,  yFinal);
 			
 			if(!this.isMoveOk){ 
-				this.setMessage("KO : la position finale ne correspond pas à "
-						+ "algo de déplacement légal de la piece ");
-
+				this.setMessage(
+                    "KO : la position finale ne correspond pas à algo de déplacement " +
+                    "légal de la piece "
+                );
 			}
 		}
-		
-		
 
 		return this.isMoveOk;
 	}
@@ -109,7 +116,7 @@ public class Echiquier implements BoardGames {
 	private boolean isMoveLegal(int xInit, int yInit, int xFinal, int yFinal) {
 
 		boolean isPieceOnPath = false;
-		Coord coordPieceInter = null;
+		Coord coordPieceInter;
 
 		this.isCatchOk = false;
 		this.isMoveOk = false;
@@ -134,7 +141,7 @@ public class Echiquier implements BoardGames {
 					// si elle n'est pas de la méme couleur, elle pourrait être prise 
 					else {
 						this.isCatchOk = true;
-						if (this.isForMove == true){
+						if (this.isForMove){
 							this.jeuCourant.setPossibleCapture();
 						}
 					}			
@@ -146,11 +153,16 @@ public class Echiquier implements BoardGames {
 			}
 
 			//	si position finale ne correspond pas à algo de déplacement piece --> false		 
-			boolean isMoveJeuOk = jeuCourant.isMoveOk(xInit, yInit, xFinal, yFinal, this.isCatchOk, this.isCastlingPossible);
-
+			boolean isMoveJeuOk = jeuCourant.isMoveOk(
+				xInit,
+				yInit,
+				xFinal,
+				yFinal,
+				this.isCatchOk,
+				this.isCastlingPossible
+			);
 			this.isMoveOk = this.isPieceToMoveOk && !isPieceOnPath && isMoveJeuOk;	
 		}
-		
 		return this.isMoveOk;
 	}
 
@@ -169,7 +181,7 @@ public class Echiquier implements BoardGames {
 	 */
 	public boolean move (int xInit, int yInit, int xFinal, int yFinal){
 
-		boolean ret = false;
+		boolean ret;
 
 		// effectuer le déplacement
 		ret = this.jeuCourant.move(xInit, yInit, xFinal, yFinal);
@@ -180,9 +192,6 @@ public class Echiquier implements BoardGames {
 			this.jeuOppose.capture(xFinal, yFinal);
 			this.setMessage("OK : déplacement  + capture  ");			
 		}
-
-
-		
 
 		this.isCatchOk = false;
 		this.isMoveOk = false;
@@ -279,8 +288,7 @@ public class Echiquier implements BoardGames {
 								break;
 							}							
 						}
-					}					
-
+					}
 					// X decroissant, Y croissant
 					if ((xFinal - xInit < 0) && (yFinal - yInit > 0)) {
 						for (int i = 1; i <= ecart; i++) {
@@ -303,11 +311,10 @@ public class Echiquier implements BoardGames {
 		return pieceOnTrajectCoord;
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 * invoque la méthode toString des 2 jeux
 	 */
-
 	public String toString() {		
 		String st = "";
 		st += "Jeu Blanc " + this.jeuBlanc.toString() + "\n";
@@ -341,13 +348,10 @@ public class Echiquier implements BoardGames {
 		this.message = message;
 	}
 
-
-
 	public boolean isEnd() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	public static void main(String[] args) {
 		Echiquier e = new Echiquier();
@@ -381,10 +385,7 @@ public class Echiquier implements BoardGames {
 			e.switchJoueur();
 		
 		// ...
-	
-		
-	
-		
-		
+
+        System.out.println(e.getPieceIHMs());
 	}
 }
