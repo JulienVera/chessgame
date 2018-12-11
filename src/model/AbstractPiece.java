@@ -1,13 +1,12 @@
 package model;
 
 
-
 /**
  * @author francoise.perrin
  * Inspiration Jacques SARAYDARYAN, Adrien GUENARD
- * G�re le comportement commun � toutes les pi�ces
- * Chaque classe d�riv�e (Pion, etc.) sera capable de dire 
- * si le d�placement est OK.
+ * Gere le comportement commun atoutes les pieces
+ * Chaque classe derivee (Pion, etc.) sera capable de dire
+ * si le deplacement est OK.
  */
 public abstract class AbstractPiece implements Pieces {
 
@@ -16,7 +15,6 @@ public abstract class AbstractPiece implements Pieces {
 	
 
 	/**
-	 * @param name
 	 * @param couleur
 	 * @param coord
 	 */
@@ -26,35 +24,35 @@ public abstract class AbstractPiece implements Pieces {
 		this.couleur=couleur;
 	}
 
-	/* (non-Javadoc)
-	 * @see model.Pieces#getX()
+	/** (non-Javadoc)
+	 * see model.Pieces#getX()
 	 */
 	public int getX(){
 		return this.x;
 	}
 
-	/* (non-Javadoc)
-	 * @see model.Pieces#getY()
+	/** (non-Javadoc)
+	 * see model.Pieces#getY()
 	 */
 	public int getY(){
 		return this.y;
 	}
 
-	/* (non-Javadoc)
-	 * @see model.Pieces#getCouleur()
+	/** (non-Javadoc)
+	 * see model.Pieces#getCouleur()
 	 */
 	public Couleur getCouleur(){
 		return this.couleur;
 	}
 
-	/* (non-Javadoc)
-	 * @see model.piece.Pieces#getType()
+	/** (non-Javadoc)
+	 * see model.piece.Pieces#getType()
 	 */
 	public String getName() {
 		return getClass().getSimpleName();
 	}
 	
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see model.Pieces#move(int, int)
 	 * 
 	 * Déplace une pièce
@@ -70,8 +68,8 @@ public abstract class AbstractPiece implements Pieces {
 
 	}
 	
-	/* (non-Javadoc)
-	 * @see model.Pieces#capture()
+	/** (non-Javadoc)
+	 * see model.Pieces#capture()
 	 * 
 	 * Capture une piece : 
 	 * passer ses coordonn�es � -1
@@ -82,7 +80,7 @@ public abstract class AbstractPiece implements Pieces {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 * 
 	 */
@@ -94,7 +92,7 @@ public abstract class AbstractPiece implements Pieces {
 	}
 
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see model.Pieces#isMoveOk(int, int)
 	 * 
 	 * En fonction du type de pièce (Pion, etc.)

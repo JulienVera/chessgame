@@ -32,12 +32,8 @@ import controler.ChessGameControlers;
  *  Cette classe est un observateur et le damier est mis à jour à chaque changement dans la classe métier
  *  
  */
-
 public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	// controleur de l'objet métier
@@ -64,7 +60,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	private int xAdjustment;
 	private int yAdjustment;
 
-
 	/**
 	 * 
 	 * Construit le plateau de l'echiquier sous forme de damier 8*8
@@ -80,7 +75,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	 *
 	 * 
 	 * @param name - nom de la fenetre
-
 	 * @param chessGameControler - 
 	 * @param boardSize - taille de la fenetre
 	 */
@@ -112,16 +106,14 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		// par une notification au démarrage du jeu
 		// le remplissage est effectué par la ligne suivante à décommenter :
 		 this.initFillGrid();
-
 	}
-
 
 	/**
 	 *  construit le plateau de l'echiquier sous forme de damier 8*8  	
 	 */
 	private void drawGrid(){
 
-		JPanel square = null;
+		JPanel square;
 
 		this.setContentPane(this.layeredPane);	
 		this.layeredPane.add(this.chessBoardGuiContainer, JLayeredPane.DEFAULT_LAYER);
@@ -148,8 +140,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		}
 	}
 
-
-
 	/**
 	 * Remplit le plateau de l'echiquier sur lequel  
 	 * sont superposes 1 JPanel pour le plateau et
@@ -174,15 +164,14 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		}
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	/** (non-Javadoc)
+	 * see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mousePressed(MouseEvent e){
 
-		Point pieceToMoveLocation = null;
-		JPanel square = null;
+		Point pieceToMoveLocation;
+		JPanel square;
 
 		this.initCoord = null;
 		this.pieceToMove = null;
@@ -219,9 +208,8 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	/** (non-Javadoc)
+	 * see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -230,20 +218,18 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	/** (non-Javadoc)
+	 * see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
-		Coord  finalCoord = null ;
+		Coord  finalCoord;
 
 		if(this.pieceToMove != null) {
 
 			this.pieceToMove.setVisible(false);
-
 			finalCoord = translateCoord(e.getX(), e.getY());
-			
 
 			// Si les coordonnees finales sont en dehors du damier, on les force à -1
 			// cela permettra à la methode chessGame.move de gerer le message d'erreur
@@ -259,8 +245,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 			// des lors qu'il est modifie par l'invocation de la méthode move(),
 			// la vue en est avertie et
 			// sa methode update est appelee pour rafraichir l'affichage du damier
-
-
 		}
 	}
 
@@ -270,7 +254,7 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	 * @return les coordonnées en base 8*8
 	 */
 	private Coord translateCoord(int xpixel, int ypixel) {	
-		Coord coord = null;
+		Coord coord;
 		Double x = new Double(Math.floor(((double) xpixel / (this.boardSize.width-10)) * 8));
 		Double y = new Double(Math.floor(((double) ypixel / (this.boardSize.height-30)) * 8));
 		coord = new Coord(x.intValue(), y.intValue());
@@ -281,7 +265,6 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	public void mouseClicked(MouseEvent e) {
 		
 	}
-
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -297,5 +280,4 @@ public class ChessGameGUI extends JFrame implements MouseListener, MouseMotionLi
 	public void mouseExited(MouseEvent e) {
 
 	}
-
 }

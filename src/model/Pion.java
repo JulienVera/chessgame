@@ -13,7 +13,7 @@ public abstract class Pion extends AbstractPiece  {
 	 * @param couleur_de_piece
 	 * @param coord
 	 */
-	public Pion(Couleur couleur_de_piece, Coord coord) {
+	Pion(Couleur couleur_de_piece, Coord coord) {
 		super(couleur_de_piece, coord);
 		this.premierCoup = true;
 	}
@@ -26,37 +26,16 @@ public abstract class Pion extends AbstractPiece  {
 
 		// Déplacement vertical
 		if (!isCatchOk && !isCastlingPossible){
-
 			if ((xFinal == this.getX())
-					&& (Math.abs(yFinal - this.getY()) <= 1 ||
-					(Math.abs(yFinal - this.getY()) <= 2 && this.premierCoup))) {
-
+                && (Math.abs(yFinal - this.getY()) <= 1
+                    || (Math.abs(yFinal - this.getY()) <= 2 && this.premierCoup))
+                ) {
                 ret = this.checkOutOfBounds(yFinal);
-
-//				if ((Couleur.NOIR.equals(this.getCouleur()) && (yFinal - this.getY() > 0))
-//						|| (Couleur.BLANC.equals(this.getCouleur())
-//								&& (yFinal - this.getY() < 0))) {
-//					ret = true;
-//				}
 			}
 		}
 		// Déplacement diagonal
 		else {
             ret = this.checkDiago(xFinal, yFinal);
-
-//			if (Couleur.NOIR.equals(this.getCouleur())) {
-//				if ((yFinal == this.getY()+1 && xFinal == this.getX()+1)
-//						|| (yFinal == this.getY()+1 && xFinal == this.getX()-1)) {
-//					ret = true;
-//				}
-//			}
-//
-//			if (Couleur.BLANC.equals(this.getCouleur())) {
-//				if ((yFinal == this.getY()-1 && xFinal == this.getX()+1)
-//						|| (yFinal == this.getY()-1 && xFinal == this.getX()-1)) {
-//					ret = true;
-//				}
-//			}
 		}
 		return ret;
 	}
